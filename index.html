@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>imgge</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #2e0854, #18032b, #4a0e4e);
+            --panel-bg: rgba(255, 255, 255, 0.03);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --accent-pink: #ff007f;
+            --accent-purple: #9d4edd;
+            --text-main: #ffffff;
+            --text-muted: #a0a0c0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(45deg, #2b0938, #5c0641, #1e053a, #42032c);
+            background-size: 400% 400%;
+            animation: elegantBg 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes elegantBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header .logo-icon {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 8px rgba(255,0,127,0.3));
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(120deg, #ffffff, #ffb6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(255, 0, 127, 0.3);
+            border-radius: 16px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-pink);
+            background: rgba(255, 0, 127, 0.03);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.1);
+        }
+
+        .upload-zone i {
+            font-size: 3.5rem;
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-zone:hover i {
+            transform: translateY(-5px);
+            color: var(--accent-pink);
+        }
+
+        .upload-zone p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .loading-container {
+            display: none;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent-pink);
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results-container {
+            display: none;
+            margin-top: 35px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tabs-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.25);
+        }
+
+        .output-wrapper {
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .output-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 16px 18px;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            outline: none;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: none;
+            border-left: 1px solid var(--panel-border);
+            color: var(--text-main);
+            padding: 0 20px;
+            height: 100%;
+            cursor: pointer;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-pink);
+            color: #fff;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 0, 127, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .tabs-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .main-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <div class="logo-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <h1>imgge</h1>
+        </div>
+
+        <div class="upload-zone" id="drop-zone">
+            <i class="fa-solid fa-images"></i>
+            <p id="upload-text">اختر صورة </p>
+            <input type="file" id="file-input" accept="image/*">
+        </div>
+
+        <div class="preview-container" id="preview-box">
+            <img src="" alt="Preview" class="preview-image" id="img-preview">
+        </div>
+
+        <div class="loading-container" id="loader">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="results-container" id="results-box">
+            <div class="tabs-menu">
+                <button class="tab-btn active" onclick="switchTab('html')">
+                    <i class="fa-solid fa-code"></i>
+                    <span>معرض HTML</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('direct')">
+                    <i class="fa-solid fa-link"></i>
+                    <span>رابط صورة</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('thumb')">
+                    <i class="fa-solid fa-compress"></i>
+                    <span>صورة مصغرة</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('large')">
+                    <i class="fa-solid fa-expand"></i>
+                    <span>صورة مكبرة</span>
+                </button>
+            </div>
+
+            <div class="output-wrapper">
+                <input type="text" class="output-field" id="output-url" readonly>
+                <button class="copy-btn" id="copy-button" onclick="copyLink()">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="toast">
+        <i class="fa-solid fa-check-double"></i> تم نسخ الرابط 
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewBox = document.getElementById('preview-box');
+        const imgPreview = document.getElementById('img-preview');
+        const loader = document.getElementById('loader');
+        const resultsBox = document.getElementById('results-box');
+        const outputUrl = document.getElementById('output-url');
+        const toast = document.getElementById('toast');
+
+        let linkData = {
+            html: '',
+            direct: '',
+            thumb: '',
+            large: ''
+        };
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--accent-pink)';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = 'rgba(255, 0, 127, 0.3)';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imgPreview.src = e.target.result;
+                previewBox.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            uploadImage(file);
+        }
+
+        function uploadImage(file) {
+            loader.style.display = 'block';
+            resultsBox.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // استخدام واجهة مجانية ومفتوحة لرفع الصور مباشرة واستخراج روابط حقيقية
+            fetch('https://api.imgbb.com/1/upload?key=6d207e02198a847aa98d0a2a901485a5', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = 'none';
+                if (data.success) {
+                    const directUrl = data.data.url;
+                    const displayUrl = data.data.url_viewer;
+                    const thumbUrl = data.data.thumb.url;
+
+                    linkData.html = `<img src="${directUrl}" alt="image" border="0">`;
+                    linkData.direct = directUrl;
+                    linkData.thumb = thumbUrl;
+                    linkData.large = displayUrl;
+
+                    resultsBox.style.display = 'block';
+                    const activeTab = document.querySelector('.tab-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+                    outputUrl.value = linkData[activeTab];
+                }
+            })
+            .catch(() => {
+                loader.style.display = 'none';
+            });
+        }
+
+        function switchTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            outputUrl.value = linkData[type];
+        }
+
+        function copyLink() {
+            outputUrl.select();
+            outputUrl.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(outputUrl.value);
+
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
